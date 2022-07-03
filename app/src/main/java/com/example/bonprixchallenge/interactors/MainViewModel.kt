@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.bonprixchallenge.data.MainRepository
 import com.example.bonprixchallenge.domain.Categories
+import com.example.bonprixchallenge.domain.Category
 import kotlinx.coroutines.*
 
 class MainViewModel constructor(private val mainRepository: MainRepository) : ViewModel() {
@@ -15,14 +16,16 @@ class MainViewModel constructor(private val mainRepository: MainRepository) : Vi
         onError("Exception handled: ${throwable.localizedMessage}")
     }
 
+    fun changeCategoryList(subCategories: List<Category>) {
+        categoryList.postValue(Categories(subCategories))
+    }
+
     fun getAllLinks() {
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
             val response = mainRepository.getNavigation()
             withContext(Dispatchers.Main) {
-
                 if (response.isSuccessful) {
                     categoryList.postValue(response.body())
-
                 } else {
                     onError("Error : ${response.message()} ")
                 }
