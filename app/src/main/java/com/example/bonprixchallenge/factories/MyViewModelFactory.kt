@@ -1,8 +1,9 @@
-package com.example.bonprixchallenge.interactors
+package com.example.bonprixchallenge.factories
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.bonprixchallenge.data.MainRepository
+import com.example.bonprixchallenge.viewmodels.MainViewModel
 
 class MyViewModelFactory constructor(private val repository: MainRepository): ViewModelProvider.Factory {
 

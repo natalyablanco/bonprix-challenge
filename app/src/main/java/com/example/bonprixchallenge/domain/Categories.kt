@@ -1,10 +1,6 @@
 package com.example.bonprixchallenge.domain
 
-data class Categories(val categories: List<Category>) {
-    fun isEmpty(): Boolean {
-      return  categories.isEmpty()
-    }
-}
+data class Categories(val categories: List<Category>)
 
 data class Category(
     val label: String = "",
