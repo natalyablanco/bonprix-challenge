@@ -12,7 +12,7 @@ interface RetrofitService {
 
     @Headers("x-api-key:" + Secrets.API_KEY)
     @GET("navigation")
-    suspend fun getNavigation(): Response<Categories>
+    suspend fun getAssortment(): Response<Categories>
 
     companion object {
         var retrofitService: RetrofitService? = null

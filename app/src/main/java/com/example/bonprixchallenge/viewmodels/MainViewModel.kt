@@ -24,7 +24,7 @@ class MainViewModel constructor(private val mainRepository: MainRepository) : Vi
 
     fun getAllLinks() {
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
-            val response = mainRepository.getNavigation()
+            val response = mainRepository.getAssortment()
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
                     categoryList.postValue(response.body())
