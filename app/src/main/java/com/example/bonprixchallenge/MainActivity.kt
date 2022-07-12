@@ -16,41 +16,28 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.rememberAsyncImagePainter
-import com.example.bonprixchallenge.data.MainRepository
 import com.example.bonprixchallenge.domain.Categories
 import com.example.bonprixchallenge.domain.Category
 import com.example.bonprixchallenge.viewmodels.MainViewModel
-import com.example.bonprixchallenge.factories.MyViewModelFactory
-import com.example.bonprixchallenge.network.RetrofitService
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : ComponentActivity() {
-    private lateinit var viewModel: MainViewModel
-
+    private val viewModel: MainViewModel by viewModel()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        val retrofitService = RetrofitService.getInstance()
-        val mainRepository = MainRepository(retrofitService)
-        viewModel =
-            ViewModelProvider(this, MyViewModelFactory(mainRepository))[MainViewModel::class.java]
 
         viewModel.closeApp.observe(this) {
             if (it) finish()
         }
 
         setContent {
-            viewModel.getAllLinks()
             MainContent(viewModel)
         }
     }
@@ -98,25 +85,27 @@ fun MenuComposableItem(
     onClickMenu: (category: Category) -> Unit,
     modifier: Modifier = Modifier
 ){
-    TextButton(onClick = { onClickMenu(category) }) {
-        Box {
-            category.image?.let {
-                Image(
-                    painter = rememberAsyncImagePainter(it),
-                    contentDescription = null,
-                    contentScale = ContentScale.FillHeight,
-                    modifier = modifier
-                        .fillMaxWidth()
-                        .height(150.dp)
+    Column {
+        TextButton(onClick = { onClickMenu(category) }) {
+            Box {
+                category.image?.let {
+                    Image(
+                        painter = rememberAsyncImagePainter(it),
+                        contentDescription = null,
+                        contentScale = ContentScale.FillHeight,
+                        modifier = modifier
+                            .fillMaxWidth()
+                            .height(150.dp)
+                    )
+                }
+                Text(category.label,
+                    color = if (category.image == null)  Color.Black else Color.White,
+                    fontSize = if (category.image == null)  16.sp else 30.sp,
                 )
             }
-            Text(category.label,
-                color = if (category.image === null)  Color.Black else Color.White,
-                fontSize = if (category.image === null)  16.sp else 30.sp,
-            )
         }
+        Divider()
     }
-    Divider()
 }
 
 @Composable

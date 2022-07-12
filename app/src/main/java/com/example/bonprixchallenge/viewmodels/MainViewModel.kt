@@ -9,7 +9,7 @@ import com.example.bonprixchallenge.domain.Category
 import com.example.bonprixchallenge.navigation.Navigation
 import kotlinx.coroutines.*
 
-class MainViewModel constructor(private val mainRepository: MainRepository) : ViewModel() {
+class MainViewModel (private val mainRepository: MainRepository) : ViewModel() {
     val categoryList = MutableLiveData<Categories>()
     val urlToDisplay = MutableLiveData<String>()
     val labelToDisplay = MutableLiveData<String>()
@@ -22,7 +22,11 @@ class MainViewModel constructor(private val mainRepository: MainRepository) : Vi
         onError("Exception handled: ${throwable.localizedMessage}")
     }
 
-    fun getAllLinks() {
+    init {
+        getAllLinks()
+    }
+
+    private fun getAllLinks() {
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
             withContext(Dispatchers.Main) {
                 categoryList.postValue(mainRepository.getAssortment())
@@ -37,7 +41,7 @@ class MainViewModel constructor(private val mainRepository: MainRepository) : Vi
                 children = categoryList.value?.categories
             )
         )
-        if (category.children === null){
+        if (category.children == null){
             urlToDisplay.postValue(category.url)
             categoryList.postValue(null)
             labelToDisplay.postValue(null)
@@ -61,10 +65,5 @@ class MainViewModel constructor(private val mainRepository: MainRepository) : Vi
 
     private fun onError(message: String) {
        Log.e("ERROR", message)
-    }
-
-    override fun onCleared() {
-        super.onCleared()
-        job?.cancel()
     }
 }
